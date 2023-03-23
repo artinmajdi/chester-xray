@@ -41,17 +41,17 @@ def convert_tf_pb2savedmodel(pb_file="chest.pb", savedmodel_folder="chest-savedm
         tf.import_graph_def(graph_def, name="")
         g = tf.get_default_graph()
         gdef = g.as_graph_def()
-        if input_node == None:
+        if input_node is None:
             maybe_inputs = [(n.name, n.op) for n in gdef.node if n.op in ('Placeholder')]
             print("Possible inputs:", maybe_inputs)
-            input_node = "{}:0".format(maybe_inputs[0][0])
-            print("Selecting first element in list: {}".format(input_node))
-        if output_node == None:   
+            input_node = f"{maybe_inputs[0][0]}:0"
+            print(f"Selecting first element in list: {input_node}")
+        if output_node is None:   
             maybe_outputs = [(n.name, n.op) for n in gdef.node if n.op in ('Softmax','Sigmoid')]
             maybe_outputs.append((gdef.node[-1].name, gdef.node[-1].op))
             print("Possible outputs:", maybe_outputs)
-            output_node = "{}:0".format(maybe_outputs[0][0])
-            print("Selecting first element in list: {}".format(output_node))
+            output_node = f"{maybe_outputs[0][0]}:0"
+            print(f"Selecting first element in list: {output_node}")
 
         inp = g.get_tensor_by_name(input_node)
         out = g.get_tensor_by_name(output_node)
